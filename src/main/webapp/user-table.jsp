@@ -159,7 +159,7 @@
                                             <td>${user.userName}</td>
                                             <td>${user.role.name}</td>
                                             <td>
-                                                <a href="user-add" class="btn btn-sm btn-primary">Sửa</a>
+                                                <a href="user-add?id=${user.id}" class="btn btn-sm btn-primary">Sửa</a>
                                                 <a href="#" user-id= "${user.id}" class="btn btn-sm btn-danger btn-delete">Xóa</a>
                                                 <a href="user-details?id=${user.id}" class="btn btn-sm btn-info">Xem</a>
                                             </td>

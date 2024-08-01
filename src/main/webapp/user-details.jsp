@@ -140,7 +140,7 @@
                                         <a href="javascript:void(0)"><img src="plugins/images/users/genu.jpg"
                                                 class="thumb-lg img-circle" alt="img"></a>
                                         <h4 class="text-white">${fullName }</h4>
-                                        <h5 class="text-white">${userEmail}</h5>
+                                        <h5 class="text-white">${email}</h5>
                                     </div>
                                 </div>
                             </div>

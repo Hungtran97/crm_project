@@ -30,6 +30,10 @@ public class UserController extends HttpServlet {
 		switch (path) {
 		case "/user-add":
 			getRoleList(req, resp);
+			String idParam = req.getParameter("id");
+			if (idParam != null && !idParam.isEmpty()) {
+				getUserInfor(req, resp);
+			}
 			req.getRequestDispatcher("user-add.jsp").forward(req, resp);
 			break;
 		case "/user-table":
@@ -65,7 +69,7 @@ public class UserController extends HttpServlet {
 		switch (path) {
 		case "/user-add":
 			getRoleList(req, resp);
-			addUser(req, resp);
+			addOrUpdateTask(req, resp);
 			req.getRequestDispatcher("user-add.jsp").forward(req, resp);
 			break;
 		case "/user-table":
@@ -86,7 +90,13 @@ public class UserController extends HttpServlet {
 			UserEntity userEntity = userService.getUserInforById(id);
 			String fullName = userEntity.getFirstName() + " " + userEntity.getLastName();
 			req.setAttribute("fullName", fullName);
-			req.setAttribute("userEmail", userEntity.getEmail());
+			req.setAttribute("email", userEntity.getEmail());
+			req.setAttribute("firstName", userEntity.getFirstName());
+			req.setAttribute("lastName", userEntity.getLastName());
+			req.setAttribute("userName", userEntity.getUserName());
+			req.setAttribute("password", userEntity.getPassword());
+			req.setAttribute("phone", userEntity.getPhone());
+			req.setAttribute("roleId", userEntity.getRole().getId());
 		}
 	}
 
@@ -141,7 +151,8 @@ public class UserController extends HttpServlet {
 		}
 	}
 
-	private void addUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+	private void addOrUpdateTask(HttpServletRequest req, HttpServletResponse resp)
+			throws ServletException, IOException {
 		String firstName = req.getParameter("first-name");
 		String lastName = req.getParameter("last-name");
 		String userName = req.getParameter("user-name");
@@ -165,19 +176,32 @@ public class UserController extends HttpServlet {
 		if (roleId == 0) {
 			messageList[2] = "Vui lòng chọn role";
 		}
-		boolean isSuccess = userService.addUser(user);
-		if (isSuccess) {
-			messageList[3] = "Thêm user thành công";
+
+		boolean isAdded = false;
+		boolean isUpdated = false;
+		String idParam = req.getParameter("id");
+		if (idParam != null && !idParam.isEmpty()) {
+			user.setId(Integer.valueOf(idParam));
+			isUpdated = userService.updateUser(user);
 		} else {
-			messageList[3] = "Thêm user thất bại";
-			req.setAttribute("prevFirstName", firstName);
-			req.setAttribute("prevLastName", lastName);
-			req.setAttribute("prevUserName", userName);
-			req.setAttribute("prevEmail", email);
-			req.setAttribute("prevPassword", password);
-			req.setAttribute("prevPhone", phone);
+			isAdded = userService.addUser(user);
 
 		}
-		req.setAttribute("isSuccess", isSuccess);
+		if (isAdded) {
+			messageList[3] = "Thêm user thành công";
+		} else if (isUpdated) {
+			messageList[3] = "Update user thành công";
+			req.setAttribute("firstName", firstName);
+			req.setAttribute("lastName", lastName);
+			req.setAttribute("userName", userName);
+			req.setAttribute("email", email);
+			req.setAttribute("password", password);
+			req.setAttribute("phone", phone);
+			req.setAttribute("roleId", roleId);
+		} else {
+			messageList[3] = "Thêm/update user thất bại";
+
+		}
+		req.setAttribute("isSuccess", isAdded || isUpdated);
 	}
 }

@@ -83,7 +83,7 @@ public class UserRepository {
 	public UserEntity getUser(int id) {
 		UserEntity userEntity = new UserEntity();
 		try {
-			String query = "SELECT u.first_name, u.last_name, u.email, r.name as role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
+			String query = "SELECT u.*, r.name as role FROM users u JOIN roles r ON u.role_id = r.id WHERE u.id = ?";
 			Connection connection = MySQLConfig.getConnection();
 			PreparedStatement statement = connection.prepareStatement(query);
 			statement.setInt(1, id);
@@ -91,8 +91,12 @@ public class UserRepository {
 			while (resultSet.next()) {
 				userEntity.setFirstName(resultSet.getString("first_name"));
 				userEntity.setLastName(resultSet.getString("last_name"));
+				userEntity.setUserName(resultSet.getString("user_name"));
+				userEntity.setPassword(resultSet.getString("password"));
+				userEntity.setPhone(resultSet.getString("phone"));
 				userEntity.setEmail(resultSet.getString("email"));
 				RoleEntity roleEntity = new RoleEntity();
+				roleEntity.setId(resultSet.getInt("role_id"));
 				roleEntity.setName(resultSet.getString("role"));
 				userEntity.setRole(roleEntity);
 			}
@@ -102,6 +106,31 @@ public class UserRepository {
 		}
 
 		return userEntity;
+	}
+
+	public int update(UserEntity user) {
+		int rowUpdate = 0;
+		boolean isRequired = user.getId() != 0 && !user.getFirstName().isBlank() && !user.getLastName().isBlank()
+				&& !user.getUserName().isBlank() && !user.getPassword().isBlank() && user.getRole().getId() != 0;
+		String query = "UPDATE users u SET u.first_name = ?, u.last_name =?, u.user_name = ?, u.password = ?, u.phone = ?, u.role_id = ? WHERE u.id = ?";
+		try {
+			if (isRequired) {
+				Connection connection = MySQLConfig.getConnection();
+				PreparedStatement statement = connection.prepareStatement(query);
+				statement.setString(1, user.getFirstName());
+				statement.setString(2, user.getLastName());
+				statement.setString(3, user.getUserName());
+				statement.setString(4, user.getPassword());
+				statement.setString(5, user.getPhone());
+				statement.setInt(6, user.getRole().getId());
+				statement.setInt(7, user.getId());
+				rowUpdate = statement.executeUpdate();
+				connection.close();
+			}
+		} catch (Exception e) {
+			System.out.println("Error update user: " + e.getMessage());
+		}
+		return rowUpdate;
 	}
 
 	public int getRoleId(String email) {

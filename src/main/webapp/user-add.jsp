@@ -99,7 +99,7 @@
                   <li><a href="profile">Thông tin cá nhân</a></li>
                   <li><a href="#">Thống kê công việc</a></li>
                   <li class="divider"></li>
-                  <li><a href="#">Đăng xuất</a></li>
+                  <li><a href="logout">Đăng xuất</a></li>
                 </ul>
               </div>
             </li>
@@ -182,7 +182,7 @@
                         placeholder="Johnathan"
                         class="form-control form-control-line"
                         name = "first-name"
-                        value="${prevFirstName}"
+                        value="${firstName}"
                       />
                     </div>
                     <label class="col-md-12">Last Name</label>
@@ -192,7 +192,7 @@
                         placeholder="Doe"
                         class="form-control form-control-line"
                         name = "last-name"
-                        value="${prevLastName}" 
+                        value="${lastName}" 
                       />
                     </div>
                     <label class="col-md-12">User Name</label>
@@ -202,7 +202,7 @@
                         placeholder="Doe's UserName"
                         class="form-control form-control-line"
                         name = "user-name"
-                        value="${prevUserName}" 
+                        value="${userName}" 
                          
                       />
                     </div>
@@ -216,7 +216,7 @@
                         class="form-control form-control-line"
                         name="email"
                         id="example-email"
-                        value="${prevEmail}" 
+                        value="${email}" 
                       />
                     </div>
                   </div>
@@ -231,7 +231,7 @@
                         placeholder="your password"
                         class="form-control form-control-line"
                         name = "password"
-                        value="${prevPassword}" 
+                        value="${password}" 
                       />
                     </div>
                   </div>
@@ -246,7 +246,7 @@
                         placeholder="123 456 7890"
                         class="form-control form-control-line"
                         name = "phone"
-                        value="${prevPhone}" 
+                        value="${phone}" 
                       />
                     </div>
                   </div>
@@ -257,7 +257,7 @@
                       	<option value="0">--Select role--</option>
                       <c:if test="${roleList.size() > 0}">
 					  	<c:forEach var="role" items="${roleList}">
-                        	<option value="${role.id}">${role.name}</option>
+                        	<option value="${role.id}" ${roleId == role.id ? "selected" : ""} >${role.name}</option>
 						 </c:forEach>
 					  </c:if>
                       </select>

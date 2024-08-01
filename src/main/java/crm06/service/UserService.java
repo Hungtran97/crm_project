@@ -38,6 +38,12 @@ public class UserService {
 
 	}
 
+	public boolean updateUser(UserEntity user) {
+
+		return userRepository.update(user) > 0;
+
+	}
+
 	public int getIdByEmail(String email) {
 		int userId = -1;
 		userId = userRepository.getUserIdByEmail(email);
